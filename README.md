@@ -152,22 +152,17 @@ Please pay close attention the section on the Mux as you will need to understand
 #### Start Your Engines! (RACECAR Start-up)
 - SSH into the racecar
 - Start the car's Docker container using the startup script:
-    - ```cd && ./run_rostorch.sh```.
+    - `cd && ./run_rostorch.sh`.
     - **This should be done exactly once every restart to access the docker container! To connect to the container from a different terminal, use `connect`.**
-    - **We recommend doing ```./run_rostorch.sh``` within a `tmux` session, since if this session dies, all of your connected terminals will close.
-- Git clone one of your team member’s wall following code from lab 2 into your local directory ~/racecar_ws/src/[WALL_FOLLOWER_CODE]
-- one person in the group: use `rsync` or `scp` to push from your docker to the racecar
-    - Note: Due to Docker permissions, you won't be able to put the files directly into the Docker's racecar_ws folder
-    - Instead, send your folder somewhere else on the racecar and use the `sudo mv` command to move the folder into racecar_ws
-- now you have all your code on the racecar! have fun! (continue steps below)
-- everyone in the group: use scp to pull the wall following directory from the racecar to your docker
-
+    - We recommend doing `./run_rostorch.sh` within a `tmux` session, since if this session dies, all of your connected terminals will close.
+- Git clone one of your team member's wall following code from lab 2 into your local directory `~/racecar_ws/src/[WALL_FOLLOWER_CODE]`. We highly recommend setting up your SSH keys on your robot (as you did in Lab 1A) so you can push/pull code from your robot!
+- Now you have all your code on the racecar! Have fun!
 
 <img src="https://user-images.githubusercontent.com/66264325/222078631-09e62662-d5c3-43c1-9e8b-54886410ba2a.png" width=50%>
 
 #### RACECAR directory layout
 
-The RACECAR comes preinstalled with most of the software you will need throughout the course. We highly recommend you keep your own software organized on the car. It's possible your car will need to be reflashed or swapped throughout the course, so it would be good if you could easily restore your code. If you want to install packages/`sudo apt-get update`/`sudo apt-get upgrade`, remember that you have to be connected to the internt.
+The RACECAR comes preinstalled with most of the software you will need throughout the course. We highly recommend you keep your own software organized on the car. It's possible your car will need to be reflashed or swapped throughout the course, so it would be good if you could easily restore your code. If you want to install packages/`sudo apt-get update`/`sudo apt-get upgrade`, remember that you have to be connected to the internet.
 
 ```bash
 ~/
@@ -186,7 +181,7 @@ Unlike the simulation (in which you just publish to the `/drive` topic), the rac
 
 ![Muxes](media/mux-2025.png)
 
-The navigation topic you have been publishing to is an alias for the highest priority navigation topic in the mux ([defined here](https://github.mit.edu/2018-RSS/racecar_base_ros_install/blob/vm/racecar/racecar/launch/mux.launch)):
+The navigation topic you have been publishing to is an alias for the highest priority navigation topic in the mux:
 
     /vesc/input/navigation -> /vesc/high_level/input/nav_0
 
@@ -231,17 +226,22 @@ When you are ready, plug in the cable connected to the portable battery into the
 
 The Jetson should automatically turn on after being provided power. It may take at least 10 seconds until you are able to ssh into it. 
 
-Place the car on your ```red brick``` so its wheels do not touch the ground and are free to spin.
+Place the car on your red brick so its wheels do not touch the ground and are free to spin.
 
-Launch this command in the terminal (it's an alias referencing a launch file):
+On ONE terminal, run the following command to start up the Docker container. This is similar to `docker compose up` on your computer:
+```
+cd && ./run_rostorch.sh
+```
 
-    teleop
+Then, on a **new terminal**, run `connect` to enter your Docker container. This is similar to `docker compose exec racecar bash`.
 
-Note that if you JUST plugged in the motor battery, it takes a few seconds for the VESC to be recognized, so if you run teleop, and get the error "Failed to connect to the VESC", wait a few seconds, and try running the command again.
-
+Finally, launch this command in the terminal to start up the robot (it's an alias referencing a launch file):
+```
+teleop
+```
+Note that if you JUST plugged in the motor battery, it takes a few seconds for the VESC motor controller to be recognized, so if you run teleop, and get the error `Failed to connect to the VESC`, wait a few seconds, and try running the command again.
 
 Now you should be able to move the car around with the joystick! To control the car manually with the controller, **you need to press and hold the left bumper (LB)** while you use the left joystick to move forward or back and the right joystick to steer left or right.
-
 
 `teleop` also acts as a [dead man's switch](https://en.wikipedia.org/wiki/Dead_man%27s_switch) and it is an easy way to stop the car from crashing - just let go of the trigger. 
 
@@ -259,30 +259,22 @@ While running any of your code, you will need to hold down the dead man's switch
 - Make sure the motor battery is plugged in and charged.
 - Make sure the lidar is turned on and connected.
 
-
 ## Part 4: IRL Safety Controller and Wall Following (The Technical Assignment)
-
 
 #### Cleaning Up Procedure 
 
-Before you get too far ahead, remember that when you are done using the racecar, you **must unplug all power cables**. This includes 2 cables that connect to the energizer battery and the motor battery. Not doing this can destroy the batteries and the servo.
-
+Before you get too far ahead, remember that when you are done using the racecar, you **must unplug all power cables**. This includes 2 cables that connect to the XTPower battery and the motor battery. Not doing this can destroy the batteries and the servo.
 
 <img src="media/39604958985_bd32f3ea16_k.jpg" alt="motor_unplugged" width=47% >
 <img src="media/39791091494_1fee2d09a0_k.jpg" alt="xtpower_unplugged"width=47% >
 
-
-
-
 ### Safety Controller
 
-Now that you have your racecar, use ```scp``` or ```git clone``` to get your team's safety controller onto the car. The safety controller should live in the ```src``` folder of your workspace, ```~/racecar_ws/src/[WALL_FOLLOWER_CODE]```.  ***Remember to*** ```colcon build``` in the root of your workspace to rebuild it and then ```source ~/racecar_ws/install/setup.bash```.
+Now that you have your racecar, use `scp` or `git` to get your team's safety controller onto the car. The safety controller should live in the `src` folder of your workspace, `~/racecar_ws/src/[WALL_FOLLOWER_CODE]`.  ***Remember to*** ```colcon build``` in the root of your workspace to rebuild it and then ```source ~/racecar_ws/install/setup.bash```.
 
 Test the performance of your safety controller by updating the necessary parameters (See the [muxes section](https://github.com/mit-rss/wall_follower#muxes) for more details) and launching the node.  You should engage the safety controller in a variety of conditions to ensure that the controller is robust and adheres to the description provided in **Part 1**.
 
 __Please be careful when you are testing__. Always have your joystick ready to stop the racecar and start very slow. 
-
-**Please include a discussion on at least one evaluation metric you used while testing on the robot in your final report.  You are NOT required to include this in your briefing.**
 
 ### Wall Following
 
@@ -300,12 +292,6 @@ To activate the wall follower, hold down the right bumper on the joystick (dead 
 ***As necessary, tune the parameters in the wall follower so that it works well in the real world.***
 
 Consider why performance on the robot might differ from performance in the simulator and what techniques you can use to improve your controller in deployment. Your final report on Lab 3 should briefly address these topics and include at least one evaluation metric.
-
-
-
-
-
-
 
 ## Data Visualization, Recording, and Analysis 
 #### RViz
