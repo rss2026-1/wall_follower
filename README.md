@@ -1,48 +1,48 @@
 # Lab 3: Wall-Following on the Racecar
 
-| Deliverable                                                                                                                                               | Due Date                             |
-|-----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|
-| Briefing Slides (uploaded to your team's [github pages](https://github.com/mit-rss/website2022))                                                          | Monday, March 9th at 1:00PM EST      |
-| Briefing (8 min presentation + 3 min Q&A)                                                                                                                 | Monday, March 9th during Lab Hours   |
-| Pushed code to Git                                                                                                                                        | Monday, March 9th at 11:59PM EST     |
-| TA Checkoff                                                                                                                                               | Wednesday, March 11th at 11:59PM EST |
-| Report (2500 word limit) (on [team github pages](https://github.com/mit-rss/website2022)) + [Team Member Assessment](https://forms.gle/1nrN7NqX2WTLV7T28) | Friday, March 13th at 11:59PM EST    |
+| Deliverable                                                                                                                                                | Due Date                             |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|
+| Briefing Slides (uploaded to your team's [github pages](https://github.com/mit-rss/website2022))                                                           | Monday, March 9th at 1:00PM EST      |
+| Briefing (8 min presentation + 3 min Q&A)                                                                                                                  | Monday, March 9th during Lab Hours   |
+| Pushed code to Git                                                                                                                                         | Monday, March 9th at 11:59PM EST     |
+| TA Checkoff                                                                                                                                                | Wednesday, March 11th at 11:59PM EST |
+| Report (2500 word limit*) (on [team github pages](https://github.com/mit-rss/website2022)) + [Team Member Assessment](https://forms.gle/1nrN7NqX2WTLV7T28) | Friday, March 13th at 11:59PM EST    |
 
-**There will be a 30% penalty applied for exceeding the word limit.**
+***There will be a 30% penalty applied for exceeding the word limit.**
 
 ## [Link to Slides](https://docs.google.com/presentation/d/1o9NIhjz9uiQ_X3LOo1nZf5e4xVVZMneH/edit?usp=sharing&ouid=112086719836319102493&rtpof=true&sd=true)
 
 ## Introduction
 
 It's time to use the actual racecar!
-In this lab you will meet your team for the rest of the semester. You will then be selecting and improving the
+In this lab, you will meet your team for the rest of the semester. You will then be selecting and improving the
 simulated wall follower code to run on real hardware. Additionally, your team will be required to implement a safety
-controller to prevent your racecar from crashing into obstacles (e.g chairs, tables, people, etc). You will also be
-working on your ability to write high quality tests, and also data visualization and analysis skills. 
+controller to prevent your racecar from crashing into obstacles (e.g., chairs, tables, people, etc.). You will also be
+working on your ability to write high-quality tests, and also data visualization and analysis skills. 
 
 ### Racecars
 
-Your team will be assigned a racecar to take care of during the semester. These cars are expensive so please coordinate
+Your team will be assigned a racecar to take care of during the semester. These cars are expensive, so please coordinate
 with your team to ensure that someone is always responsible for it and avoid leaving it unattended on campus.
 
 The racecar platform is exciting and fast, but it is not a toy. It is made up of expensive components that should
 last for future iterations of the class. It is your responsibility to keep it in good condition. The racecar can survive
 a couple light bumps, but if it goes at top speed into a wall it can be destroyed. We understand accidents happen, so
-if something comes loose or there are other minor issues please tell the TAs as soon as possible and we can help fix things.
+if something comes loose or there are other minor issues, please tell the TAs as soon as possible and we can help fix things.
 We expect a few minor issues throughout the semester, as one does when dealing with hardware, so typically it's not a big
 deal. However, if you damage the car in an extreme way due to obviously reckless behavior, you may find yourself working on a
 simulated car for the rest of the course. 
 
 ### Electrical Safety
 
-The racecar components run on relatively low voltages (≤ 20V) and current draw so we are not too concerned about dangerous shocks.
+The racecar components run on relatively low voltages (≤ 20V) and current draw, so we are not too concerned about dangerous shocks.
 However, express caution as always when plugging things in, or even touching the board slightly. You should try to ground yourself
 before touching the electronic components. 
 
-Additionally, the power banks used to power the car are LiPO batteries which can be dangerous if not treated properly.
-We'll probide storage bags for your team to store them safely when they are not in use. Please review
+Additionally, the power banks used to power the car are LiPO batteries, which can be dangerous if not treated properly.
+We'll provide storage bags for your team to store them safely when they are not in use. Please review
 [these notes](https://ehs.mit.edu/wp-content/uploads/2019/09/Lithium_Battery_Checklist.pdf) for how to operate them safely.
-If for some reason they become puffy let us know IMMEDIATELY so we can deal with it. 
+If for some reason they become puffy, let us know IMMEDIATELY so we can deal with it. 
 
 ## Submission and Grading
 
@@ -53,8 +53,8 @@ From now on, for each lab, your tasks may include:
 - Submitting a team member assessment form
 - Completing a check off with your team's assigned TA
 
-See the deliverables chart at the top of this page for due dates and times. You will be uploading your reports, and presentations to
-both canvas and a team website that demonstrates your work for the semester. In Part 0 of this lab you'll follow the instructions to
+See the deliverables chart at the top of this page for due dates and times. You will be uploading your reports and presentations to
+both Canvas and a team website that demonstrates your work for the semester. In Part 0 of this lab you'll follow the instructions to
 create your website. Beforehand, you'll need to create a Github organization for your team with the name as `rss2026-[TEAM_NUMBER]`.
 This is where your code should be pushed to before the lab deadlines.
 
@@ -69,11 +69,11 @@ a grade out of 10 points for each. Your final lab grade will also be out of 10 p
 
 The capabilities you should demonstrate through your Lab 3 deliverables are:
 - Prevent crashes using your safety controller while maintaining flexibility.
-- Complete comprehensive quantitative performance testing on your wall following implementation
+- Complete comprehensive quantitative performance testing on your wall following implementation.
 - Log into the physical car, manually drive, and visualize a rosbag of the laser scan.
 - Autonomously drive the racecar with your wall following code.
 
-Please include video, screen shots, etc. in your lab report as evidence of these deliverables. A good report will make
+Please include video, screenshots, etc. in your lab report as evidence of these deliverables. A good report will make
 **quantitative** and **qualitative** evaluations of your results. Ideas and methods for properly displaying any data collected will
 be provided at the end of this document, but it is up to your team to decide what is important to include. 
 
@@ -81,18 +81,18 @@ be provided at the end of this document, but it is up to your team to decide wha
 
 Your pushed code and performance on a check off with your team's TA will count toward your **participation grade.**
 
-At any point before the check-off deadline, please find your team's assigned TA (or another TA if they are not available) to complete a check-off. It will consist of a few test cases of your controller (both real-world and simulation are fair game), so make sure your code is ready to deploy, ROS parameters are easy to change, etc. Please  make sure your entire team is present, as we also want to check everyone's **individual** conceptual and technical understanding.
+At any point before the check-off deadline, please find your team's assigned TA (or another TA if they are not available) to complete a check-off. It will consist of a few test cases of your controller (both real-world and simulation are fair game), so make sure your code is ready to deploy, ROS parameters are easy to change, etc. Please make sure your entire team is present, as we also want to check everyone's **individual** conceptual and technical understanding.
 
 ## Part 0: Team Huddle (Meeting Your Team + Setting Up Website + Setting Up Communication Methods)!
 
-Before beginning on the lab, you should get to know your team and prepare your team website and Github organization
+Before beginning the lab, you should get to know your team and prepare your team website and Github organization
 (name should be `rss2026-#` where # is your team number). You are going to be working with each other for the rest of the semester,
 so please take some time to set up proper communication channels between all of you. This will help with keeping everyone on the
 same page about collaborative work times, practicing presentations, etc. :)
 
 Please find your teams for Spring 2026 [here]()!
 
-Each team will be using a Github website in order to organize and publish their reports and briefings.  Instructions on how to create this site and organization can be found [here](https://github.com/mit-rss/website2022). 
+Each team will be using a Github website in order to organize and publish their reports and briefings. Instructions on how to create this site and organization can be found [here](https://github.com/mit-rss/website2022). 
 
 ### Note on Team Charter & Project Management
 
@@ -104,7 +104,7 @@ for tasks, progress status, etc.
 - The charter and agenda should be created in a shared online document that is kept up-to-date and shared with the course staff in the
     About section of your online portfolio. Please make sure to give access to this document to the entire RSS staff/TAs. 
 - The CI instructors will provide guidance as you develop your Team Charter.
-- In addition, we recommend that you create a Google drive for your car team where you will collect all your project materials.
+- In addition, we recommend that you create a Google Drive for your car team where you will collect all your project materials.
 
 ## Part 1: Simulation (Technical Assignment)
 
@@ -124,20 +124,19 @@ On the racecar, we will want you to be able to demonstrate that your safety cont
 crash the racecar in a variety of scenarios and have the safety controller prevent the crashes. You should also be able to walk in
 front of the racecar without it running into you. 
 
-At the same time, your racecar should not be "scared". You should still be able to drive close to walls, turn around corners, go fast
+At the same time, your racecar should not be "scared". You should still be able to drive close to walls, turn around corners, go fast,
 etc., without the racecar freezing in its tracks. You will be required to run your safety controller in all future labs, so don't
-cripple yourself with something overprotective. There are trade-offs you will face and ideally record any findings on how you arrived
+cripple yourself with something overprotective. There are trade-offs you will face, and you should ideally record any findings on how you arrived
 at your final design. 
 
 ### Wall Follower
 
-Last week, each member of your team designed their own version of a wall-following algorithm for the racecar simulator.  However,
+Last week, each member of your team designed their own version of a wall-following algorithm for the racecar simulator. However,
 you only get one racecar per team. This means that your team will need to work together to combine ideas from multiple implementations
 of the wall follower to make a single, more robust controller.
 
-*Note: PID controllers are not one-size-fits-all. You may find that different parameter tunings, controller implementations,
-and special cases work best for different racecar speeds and racetrack conditions. Expand your wall following algorithm to take
-this into account by adjusting based on race conditions.*
+> **Note:** PID controllers are not one-size-fits-all. You may find that different parameter tunings, controller implementations,
+> and special cases work best for different racecar speeds and racetrack conditions.
 
 While developing and iterating on your combined algorithm, consider how you can accurately gauge its performance,
 especially when comparing two different implementations or parameter tunings. Include a qualitative **and** quantitative discussion
@@ -150,8 +149,8 @@ Questions to help with evaluating your wall follower:
 - What metrics are you using as part of your evaluation?
 - How many repeated tests are you using?
 - How do you ensure repeatability?  
-- What race conditions (especially racecar speeds and racecar paths) should you test on to best determine performance?
-- What graphs/visuals can you create to help make evaluation easier
+- What racing conditions (especially racecar speeds and racecar paths) should you test on to best determine performance?
+- What graphs/visuals can you create to help make evaluation easier?
 
 ## Part 2: Getting Started with the RACECAR Platform!
 
@@ -173,7 +172,7 @@ RACECAR_AP_[YOUR_CAR_NUMBER]_5GHz
 ```
 
 The 5GHz network provides a faster connection but has a more limited range. You can access the racecar without the
-router being connected to internet.
+router being connected to the internet.
 
 **NOTE: On the router, plug the ethernet cable into the BLUE slot, NOT the ORANGE. Otherwise, there will be networking issues.**
 
@@ -192,16 +191,16 @@ Now that you are connected, take a few minutes to read through the next part to 
 ### Exploring the RACECAR Software Stack (Software Guide + Mux Guide + Software Setup)
 
 It should be familiar, but poke around to get comfortable with the structure.
-Just like in the simulator, you will often need multiple terminal windows open in order to launch different ros nodes.
+Just like in the simulator, you will often need multiple terminal windows open in order to launch different ROS nodes.
 Here are some ways to do this:
 
 - Open multiple windows on your local machine and `ssh racecar` in each one of them. You can even ssh from multiple computers
     at the same time, but make sure you are communicating with your team members if you do this.
-- Use [tmux](https://github.com/tmux/tmux/wiki) or [screen](https://kb.iu.edu/d/acuy) to open layered windows in terminal and
+- Use [tmux](https://github.com/tmux/tmux/wiki) or [screen](https://kb.iu.edu/d/acuy) to open layered windows in a terminal and
     navigate through them with key commands.
 
-[Here]() is a short guide on what you may find on the jetson and docker image that helps to run the car!
-Please pay close attention the section on the Mux as you will need to understand which topic you must send your drive commands
+[Here]() is a short guide on what you may find on the Jetson and Docker image that helps to run the car!
+Please pay close attention to the section on the Mux, as you will need to understand which topic you must send your drive commands
 to on the real racecar!
 
 #### Start Your Engines! (RACECAR Start-up)
@@ -240,9 +239,9 @@ The navigation topic you have been publishing to is an alias for the highest pri
 /vesc/input/navigation -> /vesc/high_level/input/nav_0
 ```
 
-For brevity we will refer to `/vesc/high_level/input/nav_i` as `.../nav_i` in this handout (*this doesn't work on the actual racecar*).
+For brevity, we will refer to `/vesc/high_level/input/nav_i` as `.../nav_i` in this handout (*this doesn't work on the actual racecar*).
 Driving commands sent to `.../nav_0` override driving commands sent to `.../nav_1`, `.../nav_2`, etc.
-Likewise driving commands sent to `.../nav_1` override driving commands sent to `.../nav_2`, `.../nav_3`, etc.
+Likewise, driving commands sent to `.../nav_1` override driving commands sent to `.../nav_2`, `.../nav_3`, etc.
 You can use this structure to layer levels of control.
 
 For example, a robot whose job is to explore randomly and collect minerals as it finds them could use 2 muxes.
@@ -264,7 +263,7 @@ This topic is then piped to `/vesc/low_level/input/navigation` and fed into anot
 This will always have the highest priority. `.../safety` has the next highest priority. It will override anything published
 to `.../navigation`. This is where your safety controller will publish.
 
-So for your safety controller this means:
+So for your safety controller, this means:
 
 - Subscribe to `/vesc/low_level/ackermann_cmd` to intercept the driving command that is being published.
 - Subscribe to sensors like `/scan`.
@@ -273,23 +272,23 @@ So for your safety controller this means:
 **Note: These topics only exist on the physical racecar, not the simulation.** This means your simulated safety controller will
 not be able to send stop commands at a higher priority than driving commands when using the simulator. 
 
-For this section, feel free to just make the scaffold of a speed controller that issues a 0 velocity `/drive`
-AckermannDriveStamped publish to your simulated racecar whenever it reaches a situation that you think it should stop in.
+For this section, feel free to just make the scaffold of a speed controller that publishes a 0 velocity `/drive`
+AckermannDriveStamped message to your simulated racecar whenever it reaches a situation that you think it should stop in.
 Test your simulated safety controller by launching the racecar simulator and issuing some singular test drive commands that
 drive the racecar in the direction of an obstacle.  
 
 During Part 4, you will switch this drive topic using ROS parameters to make use of the muxes described above, put your code on
-the actual racecar, and tune your algorithm to better work in real life situations.
+the actual racecar, and tune your algorithm to better work in real-life situations.
 
 ## Part 3: RACECAR's First Lap! Let's get your car moving!
 
 ### Manual Navigation
 
-When you are ready, plug in the cable connected to the portable battery into the Jetson. A visual is provided below.
+When you are ready, plug the cable connected to the portable battery into the Jetson. A visual is provided below.
 
 <img src="media/39604958785_8e8161b88e_k.jpg" width=50% >
 
-The Jetson should automatically turn on after being provided power. It may take at least 10 seconds until you are able to ssh into it. 
+The Jetson should automatically turn on after being provided power. It may take at least 10 seconds before you are able to ssh into it. 
 
 Place the car on your red brick so its wheels do not touch the ground and are free to spin.
 
@@ -326,7 +325,7 @@ Once holding the dead man's switch, your code should run.
 
 - Make sure the joystick is connected and in the right mode by running `ros2 topic echo /vesc/joy`. When you press buttons on the
     joystick, you should see the messages on this topic update.
-    - The green light (next to the word mode) on the controller should be off. If it is on, click mode to change the mode back. 
+    - The green light (next to the word mode) on the controller should be off. If it is on, press the mode button to change it back. 
 - Are you pressing and holding the left bumper on the joystick?
 - Make sure the motor battery is plugged in and charged.
 - Make sure the lidar is turned on and connected.
@@ -339,7 +338,7 @@ Before you get too far ahead, remember that when you are done using the racecar,
 This includes 2 cables that connect to the XTPower battery and the motor battery. Not doing this can destroy the batteries and the servo.
 
 <img src="media/39604958985_bd32f3ea16_k.jpg" alt="motor_unplugged" width=47% >
-<img src="media/39791091494_1fee2d09a0_k.jpg" alt="xtpower_unplugged"width=47% >
+<img src="media/39791091494_1fee2d09a0_k.jpg" alt="xtpower_unplugged" width=47% >
 
 ### Safety Controller
 
@@ -352,14 +351,14 @@ Test the performance of your safety controller by updating the necessary paramet
 You should engage the safety controller in a variety of conditions to ensure that the controller is robust and adheres to
 the description provided in **Part 1**.
 
-**Please be careful when you are testing**. Always have your joystick ready to stop the racecar and start very slow. 
+**Please be careful when you are testing**. Always have your joystick ready to stop the racecar and start very slowly. 
 
 ### Wall Following
 
 Just as you did for the safety controller, get your team's updated wall following code onto the car. **Remember to**
 `colcon build` in the root of your workspace on the car to rebuild it and then `source ~/racecar_ws/install/setup.bash`.
 
-You will find already on the car a `wall_follower` package that provides a simple example of how to execute driving commands.
+You will already find a `wall_follower` package on the car that provides a simple example of how to execute driving commands.
 The node executable is called `example`. You may use this if you wish. See the [muxes section](https://github.com/mit-rss/wall_follower#muxes)
 for more details on the different topics. 
 
@@ -374,17 +373,17 @@ To activate the wall follower, hold down the right bumper on the joystick (dead 
 **As necessary, tune the parameters in the wall follower so that it works well in the real world.**
 
 Notice that we have not defined above what "it works well in the real world" means. In both your Lab 3 briefing and in your final
-report on Lab 3, we will be grading you on how you evaluate your own performance. Although a video of your car cruising along side
+report on Lab 3, we will be grading you on how you evaluate your own performance. Although a video of your car cruising alongside
 a wall is nice to look at (and good visual evidence!), we want to see statistics of metrics from repeated runs. For example,
 if you decide that cross-track error is a good metric, we are going to want to see a statistical analysis of that error. 
 
 Consider why performance on the robot might differ from performance in the simulator and what techniques you can use to improve
 your controller in deployment. Your final report on Lab 3 should briefly address these topics and include at least one evaluation
-metric that gives a comparison of performance between the simulation and real performance. 
+metric that gives a comparison of performance between simulation and real-world performance. 
 
 You should also consider a test harness that allows you to repeatedly evaluate performance of your car. The controller you develop
 in this lab may be useful in future labs. Test harnesses that assess metrics will allow you in future labs to know if you have
-accidenally changed anything that has caused a regression in performance. 
+accidentally changed anything that has caused a regression in performance. 
 
 ## Data Visualization, Recording, and Analysis 
 
@@ -393,7 +392,7 @@ accidenally changed anything that has caused a regression in performance.
 You can connect to RViz by connecting to your car's display. We have set this up for you as a vncserver accessible on port 6081
 (your local `racecar_docker` is on 6080). This is hosted on the car. 
 
-To access this on your local machine, you need to forward port 6081. This can be done by adding the flag:
+To access this on your local machine, you need to forward port 6081. This can be done by running:
 
 ```
 ssh -L 6081:localhost:6081 racecar@192.168.1.[CAR_NUMBER]
