@@ -109,7 +109,7 @@ for tasks, progress status, etc.
     About section of your online portfolio. Please make sure to give access to this document to the entire RSS staff/TAs. 
 - The CI instructors will provide guidance as you develop your Team Charter.
 - In addition, we recommend that you create a Google Drive for your car team where you will collect all your project materials.
-
+- There should be an example on canvas linked under 'Team Charter & Project Management' in modules. 
 ## Part 1: Simulation (Technical Assignment)
 
 ### Safety Controller
