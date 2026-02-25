@@ -242,10 +242,6 @@ Here are some ways to do this:
 - Use [tmux](https://github.com/tmux/tmux/wiki) or [screen](https://kb.iu.edu/d/acuy) to open layered windows in a terminal and
     navigate through them with key commands.
 
-[Here]() is a short guide on what you may find on the Jetson and Docker image that helps to run the car!
-Please pay close attention to the section on the Mux, as you will need to understand which topic you must send your drive commands
-to on the real racecar!
-
 #### Start Your Engines! (RACECAR Start-up)
 
 - SSH into the racecar
