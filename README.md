@@ -257,9 +257,7 @@ to on the real racecar!
 - Git clone one of your team member's wall following code from lab 2 into your local directory `~/racecar_ws/src/[WALL_FOLLOWER_CODE]`.
     We highly recommend setting up your SSH keys on your robot (as you did in Lab 1A) so you can push/pull code from your robot!
 - Now you have all your code on the racecar! Have fun!
-
-<img src="https://user-images.githubusercontent.com/66264325/222078631-09e62662-d5c3-43c1-9e8b-54886410ba2a.png" width=50%>
-
+- You can also use the 'scp' linux command to transfer files from your local computer to the racecar's computer and vice versa. 
 #### RACECAR directory layout
 
 The RACECAR comes preinstalled with most of the software you will need throughout the course. We highly recommend you keep your own software organized on the car. It's possible your car will need to be reflashed or swapped throughout the course, so it would be good if you could easily restore your code. If you want to install packages/`sudo apt-get update`/`sudo apt-get upgrade`, remember that you have to be connected to the internet.
