@@ -14,8 +14,11 @@ class StopSystem(Node):
         self.SCAN_TOPIC = self.get_parameter('scan_topic').get_parameter_value().string_value
         self.DRIVE_TOPIC = self.get_parameter('drive_topic').get_parameter_value().string_value
 
-        self.min_distance_threshold = 0.5
+        self.safety_margin = 0.2   # minimum buffer
+        self.max_decel = 4.0       # max deceleration
         self.min_dist = float('inf')
+
+        self.velocity = 0.0
 
         self.scan_subscriber = self.create_subscription(
             LaserScan,
@@ -37,12 +40,23 @@ class StopSystem(Node):
         )
 
     def scan_callback(self, msg):
-        x = msg.ranges * np.cos(np.arange(len(msg.ranges)) * msg.angle_increment + msg.angle_min)
+        ranges = np.array(msg.ranges)
+        angles = np.arange(len(ranges)) * msg.angle_increment + msg.angle_min
 
+        # Consider only a frontal cone
+        frontal_mask = np.abs(angles) < 0.25
+        frontal_ranges = ranges[frontal_mask]
 
+        self.min_dist = np.min(frontal_ranges)
+
+        stopping_distance = (self.velocity ** 2) / (2.0 * self.max_decel) + self.safety_margin
+
+        if self.min_dist < stopping_distance:
+            self.publish_stop()
 
 
     def drive_callback(self, msg):
+        self.velocity = msg.drive.speed
 
 
     def publish_stop(self):
