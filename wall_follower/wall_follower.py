@@ -11,7 +11,6 @@ from sensor_msgs.msg import LaserScan
 
 from wall_follower.visualization_tools import VisualizationTools
 
-
 class WallFollower(Node):
 
     def __init__(self):
@@ -36,80 +35,125 @@ class WallFollower(Node):
         # to change the parameters during testing.
         # DO NOT MODIFY THIS! 
         self.add_on_set_parameters_callback(self.parameters_callback)
-  
-        self.publisher_ = self.create_publisher(AckermannDriveStamped, self.DRIVE_TOPIC, 20)
-        self.publisher_wall = self.create_publisher(Marker, 'wall', 20)
-        self.publisher_path = self.create_publisher(Marker, 'path', 20)
-        # self.publisher_test = self.create_publisher(Float32, 'wall', 20)
-        self.subscription = self.create_subscription(
-            LaserScan,
-            self.SCAN_TOPIC,
-            self.listener_callback,
-            20)
-        self.subscription
-        self.start = 27
-        self.end = 38
 
-    def listener_callback(self, msg):
-        time = self.get_clock().now().to_msg()
+        # Publishers / subscribers
+        self.drive_pub = self.create_publisher(AckermannDriveStamped, self.DRIVE_TOPIC, 1)
+        self.wall_pub = self.create_publisher(Marker, '/wall', 1)
+        self.scan_sub = self.create_subscription(LaserScan, self.SCAN_TOPIC, self.scan_callback, 1)
 
-        angle_increment = msg.angle_increment
-        if self.SIDE == -1:
-            ranges = np.array(msg.ranges[self.start:self.end+1])
-            angles = np.array([angle_increment*i-(3*np.pi/4) for i in range(self.start, self.end+1)])
+        # Controller gains (tweakable)
+        self.Kp = 1.0
+        self.Kd = 0.25
+        self.k_angle = 0.6  # small orientation term
+
+        # Limits and filters
+        self.max_steering_angle = 0.34
+        self.x_min = 0.05
+        self.x_max = 4.0
+        self.range_min = 0.05
+        self.range_max = 10.0
+        self.slow_down_error_threshold = 0.6
+
+        # State for derivative and filtering
+        self.prev_error = 0.0
+        self.prev_time = None
+        self.derivative = 0.0
+        self.derivative_alpha = 0.2  # exponential smoothing factor for derivative
+
+        # Minimum dt to avoid extreme derivatives
+        self.min_dt = 1e-3
+        self.max_dt = 0.5
+
+    def scan_callback(self, msg: LaserScan):
+        """Process LaserScan: select side, fit line, compute PD control, publish drive."""
+        ranges = np.array(msg.ranges, dtype=np.float64)
+        n = len(ranges)
+        angles = msg.angle_min + np.arange(n, dtype=np.float64) * msg.angle_increment
+
+        # Cartesian coordinates in robot frame
+        x = ranges * np.cos(angles)
+        y = ranges * np.sin(angles)
+
+        # Valid point mask
+        valid_range = np.isfinite(ranges) & (ranges >= self.range_min) & (ranges <= self.range_max)
+        correct_side = self.SIDE * y > 0
+        in_front = (x >= self.x_min) & (x <= self.x_max)
+        valid = valid_range & correct_side & in_front
+
+        xs = x[valid]
+        ys = y[valid]
+
+        # Fallback if not enough points: slow down and go straight (or small bias)
+        if xs.size < 6:
+            drive = AckermannDriveStamped()
+            drive.drive.speed = float(self.VELOCITY * 0.5)
+            drive.drive.steering_angle = 0.0
+            self.drive_pub.publish(drive)
+            return
+
+        # Least-squares fit of wall: y = m*x + b (x is forward)
+        A = np.vstack([xs, np.ones_like(xs)]).T
+        try:
+            m, b = np.linalg.lstsq(A, ys, rcond=None)[0]
+        except Exception:
+            # numerical fallback if least-squares fails- ends function
+            drive = AckermannDriveStamped()
+            drive.drive.speed = float(self.VELOCITY * 0.5)
+            drive.drive.steering_angle = 0.0
+            self.drive_pub.publish(drive)
+            return
+
+        # Visualization of fitted line (for debugging/rviz)
+        xv = np.linspace(0.0, 6.0, num=20)
+        yv = m * xv + b
+        VisualizationTools.plot_line(xv, yv, self.wall_pub, frame="/laser")
+
+        # Distance from origin (robot) to line
+        current_distance = abs(b) / np.sqrt(1.0 + m ** 2)
+        # Wall orientation
+        theta_wall = np.arctan(m)
+
+        # Distance error: positive if too far from wall
+        error = current_distance - self.DESIRED_DISTANCE
+
+        # Time & derivative
+        now = self.get_clock().now().nanoseconds * 1e-9
+        if self.prev_time is not None:
+            dt = now - self.prev_time
+            if dt <= 0:
+                dt = self.min_dt
         else:
-            ranges = np.array(msg.ranges[-self.end-1:-self.start])
-            angles = np.array([angle_increment*i+(3*np.pi/4) for i in range(-self.end, -self.start+1)])
-        closest_idx = np.argmin(ranges)
-        x_coord = ranges * np.cos(angles)
-        y_coord = ranges * np.sin(angles)
+            dt = 0.05
 
-        start = max(closest_idx-10, 0)
-        end = start + 21
+        # Clamp steering with derivative values to avoid spikes 
+        dt = float(np.clip(dt, self.min_dt, self.max_dt))
 
-        sub_x = x_coord[start:end]
-        sub_y = y_coord[start:end]
+        raw_derivative = (error - self.prev_error) / dt if dt > 0 else 0.0
+        # Exponential smoothing on derivative to reduce noise (self.derivative_alpha term)
+        self.derivative = (1.0 - self.derivative_alpha) * self.derivative + self.derivative_alpha * raw_derivative
 
-        sub_x = x_coord
-        sub_y = y_coord
+        # Updating time and error
+        self.prev_error = error
+        self.prev_time = now
 
-        oc = np.polyfit(sub_x, sub_y, 1)
-        coeff = np.polyfit(sub_x, sub_y, 1)
-        original_line = np.poly1d(oc)
-        coeff[1] = (y_coord[closest_idx] - coeff[0]*x_coord[closest_idx]) - self.SIDE*(coeff[0]**2 + (self.DESIRED_DISTANCE*1.2))**0.5
-        offset_line = np.poly1d(coeff)
-        angle_offset = np.arctan(coeff)[0]
+        # PD + small orientation term
+        control = self.Kp * error + self.Kd * self.derivative + self.k_angle * theta_wall
 
+        # SIDE: +1 left, -1 right — apply sign so positive control steers toward wall when too far
+        steering = self.SIDE * control
+        steering = float(np.clip(steering, -self.max_steering_angle, self.max_steering_angle))
 
-        VisualizationTools.plot_line(
-            [0.0, x_coord[closest_idx]], [original_line(0.0), original_line(x_coord[closest_idx])], self.publisher_wall
-        )
-        VisualizationTools.plot_line(
-            [0.0, 10.0], [offset_line(0.0), offset_line(10.0)], self.publisher_path
-        )
+        # Speed scheduling: slow down for large errors
+        speed = float(self.VELOCITY)
+        if abs(error) > self.slow_down_error_threshold:
+            speed = 0.6 * self.VELOCITY
 
-        output = AckermannDriveStamped()
-        output.header.stamp = time
-        output.header.frame_id = 'base_link'
-        d = ranges[closest_idx] - self.DESIRED_DISTANCE
-        distance_factor = 2/3*(np.pi/2-angle_offset)*np.arctan((5*d)**3)
-        angle_factor = 2/3 * 1/(1+abs(d)) * angle_offset
+        # Publish drive
+        drive = AckermannDriveStamped()
+        drive.drive.speed = speed
+        drive.drive.steering_angle = steering
+        self.drive_pub.publish(drive)
 
-        look_ahead = min(msg.ranges[50:52])
-        look_ahead_factor = -np.pi/(self.DESIRED_DISTANCE*look_ahead) if look_ahead < 2*self.DESIRED_DISTANCE else 0
-        turn = self.SIDE*(distance_factor + look_ahead_factor) + angle_factor
-        # print(look_ahead_factor)
-        # print('Angle: ', angle_offset)
-        # print('Angle_f: ', angle_factor)
-        print('Distance: ', d)
-        # print('Distance_f: ', distance_factor)
-        # print('Turn: ', turn)
-
-        output.drive.steering_angle = turn
-        output.drive.speed = self.VELOCITY
-
-        self.publisher_.publish(output)
-    
     def parameters_callback(self, params):
         """
         DO NOT MODIFY THIS CALLBACK FUNCTION!
@@ -136,7 +180,6 @@ def main():
     rclpy.spin(wall_follower)
     wall_follower.destroy_node()
     rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()
