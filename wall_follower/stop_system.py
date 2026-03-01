@@ -23,7 +23,7 @@ class StopSystem(Node):
             self.scan_callback,
             10
         )
-        self.drive_subcriber= self.create_subscriber(
+        self.drive_subscriber = self.create_subscription(
             AckermannDriveStamped,
             self.DRIVE_TOPIC,
             self.drive_callback,
@@ -43,7 +43,7 @@ class StopSystem(Node):
 
 
     def drive_callback(self, msg):
-        
+
 
     def publish_stop(self):
         stop_msg = AckermannDriveStamped()
