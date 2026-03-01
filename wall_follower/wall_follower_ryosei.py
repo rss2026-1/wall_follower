@@ -51,8 +51,8 @@ class WallFollower(Node):
         self.prev_dist_error = 0.0
         self.prev_angle_error = 0.0
 
-        # Clamp steering to max physical range
-        self.max_steer = 0.34  # ~20 degrees
+        # Clamp steering
+        self.max_steer = 0.3
 
     def scan_callback(self, msg):
         dists = np.array(msg.ranges)
@@ -98,10 +98,9 @@ class WallFollower(Node):
             X = np.column_stack([X, np.ones_like(X)])
             th = np.linalg.inv(X.T @ X) @ X.T @ Y
 
-            # Distance from origin to fitted line y = slope*x + intercept
+            # Distance from origin to fitted line
             wall_dist = np.abs(th[1]) / np.sqrt(th[0] ** 2 + 1)
 
-            # Compute errors (always, so they're defined in both branches)
             dist_error = (self.DESIRED_DISTANCE - wall_dist) * -self.SIDE
 
             Kp_dist = 1.5
@@ -149,4 +148,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
