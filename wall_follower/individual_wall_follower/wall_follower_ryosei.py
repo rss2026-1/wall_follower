@@ -1,4 +1,6 @@
 
+from dbm import error
+
 import numpy as np
 import rclpy
 from rclpy.node import Node
@@ -50,6 +52,7 @@ class WallFollower(Node):
 
         self.prev_dist_error = 0.0
         self.prev_angle_error = 0.0
+        self.prev_time = self.get_clock().now()
 
         # Clamp steering
         self.max_steer = 0.3
@@ -87,9 +90,11 @@ class WallFollower(Node):
             front_threshold = 1.3
 
         if not has_wall:
+            #if no wall on the side, max turn (opening)
             steering = self.SIDE * self.max_steer
             self.prev_dist_error = 0.0
         elif front_dist < front_threshold:
+            # if there is a corner ahead, max turn
             steering = -self.SIDE * self.max_steer
             self.prev_dist_error = 0.0
         else:
@@ -105,9 +110,12 @@ class WallFollower(Node):
 
             Kp_dist = 1.5
             Kd_dist = 2.0
+            dt = (self.get_clock().now() - self.prev_time).nanoseconds / 1e9
+            error_dot = (dist_error - self.prev_dist_error) / dt
+            steering = Kp_dist * dist_error + Kd_dist * error_dot
 
-            steering = Kp_dist * dist_error + Kd_dist * (dist_error - self.prev_dist_error)
             self.prev_dist_error = dist_error
+            self.prev_time = self.get_clock().now()
 
         steering = np.clip(steering, -self.max_steer, self.max_steer)
 
