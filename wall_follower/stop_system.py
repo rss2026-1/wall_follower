@@ -64,3 +64,14 @@ class StopSystem(Node):
         stop_msg.drive.speed = 0.0
         stop_msg.drive.steering_angle = 0.0
         self.stop_publisher.publish(stop_msg)
+
+def main():
+    rclpy.init()
+    stop_system = StopSystem()
+    rclpy.spin(stop_system)
+    stop_system.destroy_node()
+    rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
