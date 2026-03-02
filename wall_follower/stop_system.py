@@ -48,16 +48,24 @@ class StopSystem(Node):
         frontal_ranges = ranges[frontal_mask]
 
         self.min_dist = np.min(frontal_ranges)
+        turning_distance = 0.5/np.sin(0.34)
 
         stopping_distance = (self.velocity ** 2) / (2.0 * self.max_decel) + self.safety_margin
 
-        if self.min_dist < stopping_distance:
+        if turning_distance - 0.1 < self.min_dist < turning_distance + 0.1:
+            self.publish_turn(msg)
+        elif self.min_dist < stopping_distance:
             self.publish_stop()
 
 
     def drive_callback(self, msg):
         self.velocity = msg.drive.speed
 
+    def publish_turn(self, msg):
+        stop_msg = AckermannDriveStamped()
+        stop_msg.drive.speed = msg.speed
+        stop_msg.drive.steering_angle = 0.34
+        self.stop_publisher.publish(stop_msg)
 
     def publish_stop(self):
         stop_msg = AckermannDriveStamped()
