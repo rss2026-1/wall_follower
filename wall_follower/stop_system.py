@@ -15,7 +15,7 @@ class StopSystem(Node):
         self.DRIVE_TOPIC = self.get_parameter('drive_topic').get_parameter_value().string_value
 
         self.safety_margin = 0.2   # minimum buffer
-        self.max_decel = 3.5       # max deceleration
+        self.max_decel = 1.8       # max deceleration
         self.min_dist = float('inf')
 
         self.velocity = 0.0
