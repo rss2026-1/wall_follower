@@ -19,7 +19,7 @@ class WallFollower(Node):
         # Declare parameters to make them available for use
         # DO NOT MODIFY THIS! 
         self.declare_parameter("scan_topic", "/scan")
-        self.declare_parameter("drive_topic", "/drive")
+        self.declare_parameter("drive_topic", "/vesc/high_level/input/nav_0")
         self.declare_parameter("side", 1)
         self.declare_parameter("velocity", 1.0)
         self.declare_parameter("desired_distance", 1.0)
@@ -100,14 +100,14 @@ class WallFollower(Node):
         look_ahead_factor = -np.pi/(self.DESIRED_DISTANCE*look_ahead) if look_ahead < 2*self.DESIRED_DISTANCE else 0
         turn = self.SIDE*(distance_factor + look_ahead_factor) + angle_factor
         # print(look_ahead_factor)
-        # print('Angle: ', angle_offset)
+        print('Angle: ', angle_offset)
         # print('Angle_f: ', angle_factor)
         print('Distance: ', d)
         # print('Distance_f: ', distance_factor)
-        # print('Turn: ', turn)
+        print('Turn: ', turn)
 
         output.drive.steering_angle = np.clip(turn, -self.max_angle, self.max_angle)
-        output.drive.speed = self.VELOCITY
+        output.drive.speed = 0.5
 
         self.publisher_.publish(output)
     
