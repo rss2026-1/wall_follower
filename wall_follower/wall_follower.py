@@ -88,7 +88,7 @@ class WallFollower(Node):
         side_angles = side_angles[valid]
 
         # Remove far points
-        max_dist = 9
+        max_dist = 5
         close = side_ranges < max_dist
         side_ranges = side_ranges[close]
         side_angles = side_angles[close]
@@ -139,6 +139,7 @@ class WallFollower(Node):
         drive_msg.drive.speed = self.VELOCITY   # reduce speed when tuning
         # self.get_logger().info(f"SIDE: {self.SIDE}, dist: {current_distance:.3f}, error: {error:.3f}")
         self.drive_pub.publish(drive_msg)
+        self.get_logger().info("Current diatance: " + str(current_distance))
 
         """# Compute wall orientation
         theta_wall = np.arctan(m)

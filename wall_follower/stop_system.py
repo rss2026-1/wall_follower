@@ -15,7 +15,7 @@ class StopSystem(Node):
         self.SCAN_TOPIC = self.get_parameter('scan_topic').get_parameter_value().string_value
         self.VEL_TOPIC  = self.get_parameter('vel_topic').get_parameter_value().string_value
 
-        self.safety_margin = 0.35  # increased from 0.2 to account for odom snap artifact
+        self.safety_margin = 0.30  # increased from 0.2 to account for odom snap artifact
         self.min_dist = float('inf')
         self.velocity = 0.0
 
@@ -43,12 +43,13 @@ class StopSystem(Node):
             self.publish_stop()
 
     def get_stopping_distance(self, vel):
-        dist = 0.137 * max(abs(vel), 0.0) ** 2.48 + self.safety_margin
+        # Validated against log: 1.0m/s→0.21m, 1.5m/s→0.45m, 2.0m/s→0.74m
+        d = 0.210 * max(abs(vel), 0.0) ** 1.825 + self.safety_margin
         self.get_logger().info(
             f"Current velocity: {vel:.2f} m/s, "
-            f"Stopping distance: {dist:.2f} m, "
+            f"Stopping distance: {d:.2f} m, "
             f"Min distance: {self.min_dist:.2f} m")
-        return dist
+        return d
 
     def vel_callback(self, msg):
         self.velocity = msg.twist.twist.linear.x
