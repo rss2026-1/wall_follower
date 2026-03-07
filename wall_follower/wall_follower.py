@@ -15,10 +15,10 @@ class WallFollower(Node):
 
         super().__init__("wall_follower")
         # Declare parameters to make them available for use
-        # DO NOT MODIFY THIS! 
+        # DO NOT MODIFY THIS!
         self.declare_parameter("scan_topic", "/scan")
-        self.declare_parameter("drive_topic", "/drive")
-        self.declare_parameter("side", 1)
+        self.declare_parameter("drive_topic", "/vesc/low_level/input/navigation")
+        self.declare_parameter("side", -1)
         self.declare_parameter("velocity", 1.0)
         self.declare_parameter("desired_distance", 1.0)
 
@@ -29,10 +29,10 @@ class WallFollower(Node):
         self.SIDE = self.get_parameter('side').get_parameter_value().integer_value
         self.VELOCITY = self.get_parameter('velocity').get_parameter_value().double_value
         self.DESIRED_DISTANCE = self.get_parameter('desired_distance').get_parameter_value().double_value
-		
+
         # This activates the parameters_callback function so that the tests are able
         # to change the parameters during testing.
-        # DO NOT MODIFY THIS! 
+        # DO NOT MODIFY THIS!
         self.add_on_set_parameters_callback(self.parameters_callback)
         self.get_logger().info(f"Starting node")
 
@@ -64,7 +64,7 @@ class WallFollower(Node):
         self.get_logger().info("NEW VERSION RUNNING - 2")
         self.get_logger().info("Wall follower node started")
 
-        # TODO: Write your callback functions here    
+        # TODO: Write your callback functions here
 
     def scan_callback(self, msg):
         ranges = np.array(msg.ranges)
@@ -77,7 +77,7 @@ class WallFollower(Node):
         else:                # LEFT wall
             # mask = ((angles > np.deg2rad(50)) & (angles < np.deg2rad(100))) | ((angles > np.deg2rad(-10)) & (angles < np.deg2rad(30)))
             mask = ((angles > np.deg2rad(30)) & (angles < np.deg2rad(90))) | ((angles > np.deg2rad(-20)) & (angles < np.deg2rad(20)))
-            # mask = ((angles > np.deg2rad(60)) & (angles < np.deg2rad(100))) 
+            # mask = ((angles > np.deg2rad(60)) & (angles < np.deg2rad(100)))
 
         side_ranges = ranges[mask]
         side_angles = angles[mask]
@@ -87,7 +87,7 @@ class WallFollower(Node):
         side_ranges = side_ranges[valid]
         side_angles = side_angles[valid]
 
-        # Remove far points 
+        # Remove far points
         max_dist = 9
         close = side_ranges < max_dist
         side_ranges = side_ranges[close]
@@ -139,7 +139,7 @@ class WallFollower(Node):
         drive_msg.drive.speed = self.VELOCITY   # reduce speed when tuning
         # self.get_logger().info(f"SIDE: {self.SIDE}, dist: {current_distance:.3f}, error: {error:.3f}")
         self.drive_pub.publish(drive_msg)
-                               
+
         """# Compute wall orientation
         theta_wall = np.arctan(m)
 
@@ -177,8 +177,8 @@ class WallFollower(Node):
     def parameters_callback(self, params):
         """
         DO NOT MODIFY THIS CALLBACK FUNCTION!
-        
-        This is used by the test cases to modify the parameters during testing. 
+
+        This is used by the test cases to modify the parameters during testing.
         It's called whenever a parameter is set via 'ros2 param set'.
         """
         # drive_msg = AckermannDriveStamped()
@@ -210,4 +210,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    

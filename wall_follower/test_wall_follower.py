@@ -20,10 +20,10 @@ class WallTest(Node):
         super().__init__("test_wall_follower")
         # Declare parameters to make them available for use
         self.declare_parameter("scan_topic", "/scan")
-        self.declare_parameter("drive_topic", "/drive")
+        self.declare_parameter("drive_topic", "/vesc/low_level/input/navigation")
         self.declare_parameter("pose_topic", "/pose")
 
-        self.declare_parameter("side", 1)
+        self.declare_parameter("side", -1)
         self.declare_parameter("velocity", 1.0)
         self.declare_parameter("desired_distance", 1.0)
         self.declare_parameter("start_x", -4.0)
