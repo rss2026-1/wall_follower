@@ -212,8 +212,9 @@ def main():
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.show()
-
+    out_path = args.bag.rstrip("/") + "_analysis.png"
+    plt.savefig(out_path, dpi=150, bbox_inches="tight")
+    print(f"Plot saved to {out_path}")
 
 if __name__ == "__main__":
     main()

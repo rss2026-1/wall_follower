@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//home/racecar/**)",
+      "Read(//etc/**)",
+      "Bash(tmux show-options:*)"
+    ]
+  }
+}
