@@ -119,7 +119,7 @@ class WallFollower(Node):
         VisualizationTools.plot_line(x, y, self.line_pub, frame="/laser")
 
         current_distance = b / np.sqrt(1 + m**2)
-        error = self.DESIRED_DISTANCE - abs(current_distance)
+        error = self.DESIRED_DISTANCE - (abs(current_distance) + abs(m) * 0.1) #add look ahead factor of distance to forward facing wall multiplied by angle between wall and car to make the car steer better around corners
 
         now = self.get_clock().now().nanoseconds / 1e9
         dt = now - self.prev_time if hasattr(self, "prev_time") else 0.01
