@@ -18,10 +18,10 @@ class WallFollower(Node):
         # Declare parameters to make them available for use
         # DO NOT MODIFY THIS!
         self.declare_parameter("scan_topic", "/scan")
-        self.declare_parameter("drive_topic", "/vesc/low_level/input/navigation")
-        # self.declare_parameter("drive_topic", "/drive")
+        # self.declare_parameter("drive_topic", "/vesc/low_level/input/navigation")
+        self.declare_parameter("drive_topic", "/drive")
         self.declare_parameter("side", -1)
-        self.declare_parameter("velocity", 1.5)
+        self.declare_parameter("velocity", 1.0)
         self.declare_parameter("desired_distance", 1.0)
 
         # Fetch constants from the ROS parameter server
@@ -42,11 +42,11 @@ class WallFollower(Node):
         # PID constants
         ##################
         self.kp = 2.0
-        self.kd = 1.0
+        self.kd = 0.0
         # self.k_angle = 0.8
 
         # Lookahead
-        self.k_lookahead = 1            # gain on predicted future error
+        self.k_lookahead = 1         # gain on predicted future error
         self.LOOKAHEAD_DIST = 2.0       # how many meters to look ahead
 
         # RANSAC
@@ -89,7 +89,7 @@ class WallFollower(Node):
         )
 
 
-        self.get_logger().info("NEW VERSION RUNNING - KDF")
+        self.get_logger().info("NEW VERSION RUNNING - KD")
         self.get_logger().info("Wall follower node started")
 
     # TODO: Write your callback functions here
@@ -265,8 +265,8 @@ class WallFollower(Node):
         drive_msg.drive.steering_angle = steering
         drive_msg.drive.speed = self.VELOCITY   # reduce speed when tuning
         self.drive_pub.publish(drive_msg)
-        # self.get_logger().info("Current distance: " + str(dist_current))
-        # self.get_logger().info("Error ahead: " + str(steering))
+        self.get_logger().info("Current distance: " + str(dist_current))
+        self.get_logger().info("Error ahead: " + str(steering))
 
     '''
     def scan_callback(self, msg):

@@ -45,10 +45,10 @@ class StopSystem(Node):
     def get_stopping_distance(self, vel):
         # Validated against log: 1.0m/s→0.21m, 1.5m/s→0.45m, 2.0m/s→0.74m
         d = 0.210 * max(abs(vel), 0.0) ** 1.825 + self.safety_margin
-        self.get_logger().info(
-            f"Current velocity: {vel:.2f} m/s, "
-            f"Stopping distance: {d:.2f} m, "
-            f"Min distance: {self.min_dist:.2f} m")
+        # self.get_logger().info(
+        #     f"Current velocity: {vel:.2f} m/s, "
+        #     f"Stopping distance: {d:.2f} m, "
+        #     f"Min distance: {self.min_dist:.2f} m")
         return d
 
     def vel_callback(self, msg):
