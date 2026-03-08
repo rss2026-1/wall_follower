@@ -40,7 +40,7 @@ class WallFollower(Node):
         ##################
         # PID constants
         ##################
-        self.kp = 2
+        self.kp = 2.0
         self.kd = 0.25
         # self.k_angle = 0.8
         
@@ -75,7 +75,7 @@ class WallFollower(Node):
             self.DRIVE_TOPIC,
             10)
 
-        self.get_logger().info("NEW VERSION RUNNING - 5")
+        self.get_logger().info("NEW VERSION RUNNING - M2")
         self.get_logger().info("Wall follower node started")
 
     # TODO: Write your callback functions here
