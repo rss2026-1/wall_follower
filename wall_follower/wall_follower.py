@@ -41,11 +41,11 @@ class WallFollower(Node):
         # PID constants
         ##################
         self.kp = 2
-        self.kd = 0.4
+        self.kd = 0.25
         # self.k_angle = 0.8
         
         # Lookahead
-        self.k_lookahead = 0.8          # gain on predicted future error
+        self.k_lookahead = 1         # gain on predicted future error
         self.LOOKAHEAD_DIST = 2.0       # how many meters to look ahead
 
         # RANSAC
@@ -65,7 +65,7 @@ class WallFollower(Node):
         # Subscriber to LaserScan
         self.scan_sub = self.create_subscription(
             LaserScan,
-            '/scan',
+            self.SCAN_TOPIC,
             self.scan_callback,
             10)
 
@@ -75,10 +75,10 @@ class WallFollower(Node):
             self.DRIVE_TOPIC,
             10)
 
-        self.get_logger().info("NEW VERSION RUNNING - 3")
+        self.get_logger().info("NEW VERSION RUNNING - 4")
         self.get_logger().info("Wall follower node started")
 
-        # TODO: Write your callback functions here
+    # TODO: Write your callback functions here
 
     def _extract_wall_points(self, ranges, angles):
         '''
@@ -90,8 +90,8 @@ class WallFollower(Node):
         
         Bounded by MAX_DIST; discarding inf/NaN values
         '''
-
         MAX_DIST = 5.0
+
         if self.SIDE == -1:   # RIGHT wall
             side_mask = (angles >= np.deg2rad(-90)) & (angles <= np.deg2rad(-30))
             forward_mask = (angles >  np.deg2rad(-30)) & (angles <= np.deg2rad(-10))
@@ -186,8 +186,12 @@ class WallFollower(Node):
             self.get_logger().warn("Not enough wall points for RANSAC")
             return
 
-        # RANSAC
-        m, b, inliers = self._ransac_line_fit(x_all, y_all)
+        # RANSAC 
+        # m, b, inliers = self._ransac_line_fit(x_all, y_all)
+        
+        # Lienar regression
+        A = np.vstack([x_all, np.ones(len(x_all))]).T
+        m, b = np.linalg.lstsq(A, y_all, rcond=None)[0]
 
         if m is None: 
             self.get_logger().warn("RANSAC failed- could not find good wall fit")
