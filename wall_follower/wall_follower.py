@@ -59,7 +59,7 @@ class WallFollower(Node):
         self.prev_time = self.get_clock().now().nanoseconds / 1e9
         
         self.WALL_TOPIC = "/wall"
-        self.line_pub = self.create_publisher(Marker, self.WALL_TOPIC, 1)
+        self.line_pub = self.create_publisher(Marker, self.WALL_TOPIC, 20)
 
         # TODO: Initialize your publishers and subscribers here
         # Subscriber to LaserScan
@@ -75,7 +75,7 @@ class WallFollower(Node):
             self.DRIVE_TOPIC,
             10)
 
-        self.get_logger().info("NEW VERSION RUNNING - 4")
+        self.get_logger().info("NEW VERSION RUNNING - 5")
         self.get_logger().info("Wall follower node started")
 
     # TODO: Write your callback functions here
@@ -200,7 +200,7 @@ class WallFollower(Node):
         # Visualizer
         x_vis = np.linspace(-10.0, 10.0, 40)
         y_vis = m*x_vis+b
-        VisualizationTools.plot_line(x_vis, y_vis, self.line_pub, frame="/laser")
+        VisualizationTools.plot_line(x_vis, y_vis, self.line_pub)
 
         # Compute error
         dist_current = abs(self._perpendicular_distance(m,b))
