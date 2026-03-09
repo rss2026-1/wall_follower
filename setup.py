@@ -26,10 +26,13 @@ setup(
     entry_points={
         'console_scripts': [
             'wall_follower = wall_follower.wall_follower:main',
+            'wall_follower_simulator = wall_follower.wall_follower_simulator:main',
 	        'viz_example = wall_follower.viz_example:main',
         	'test_wall_follower = wall_follower.test_wall_follower:main',
             'stop_system = wall_follower.stop_system:main',
             'go_straight = wall_follower.go_straight:main',
+            'step_test = wall_follower.step_test:main',
+            'wall_follower_ryosei = wall_follower.wall_follower_ryosei:main',
         ],
     },
 )

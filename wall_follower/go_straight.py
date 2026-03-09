@@ -12,7 +12,7 @@ class Straight(Node):
     def go_straight(self):
         drive_msg = AckermannDriveStamped()
         drive_msg.header.stamp = self.get_clock().now().to_msg()
-        drive_msg.drive.speed = 1.5
+        drive_msg.drive.speed = 2.5
         drive_msg.drive.steering_angle = 0.0
         self.drive_pub.publish(drive_msg)
 

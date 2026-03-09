@@ -52,11 +52,26 @@ def generate_launch_description():
         parameters=[config]
     )
 
+    wall_follower_simulator = Node(
+        package="wall_follower",
+        executable="wall_follower_simulator",
+        name='wall_follower_simulator',
+        output="screen",
+        parameters=[{
+            "scan_topic": "/scan",
+            "drive_topic": "/drive",
+            "velocity": 1.0,
+            "desired_distance": 1.0,
+            "side": -1,
+        }]
+    )
+
     
     ld.add_action(map_server)
     ld.add_action(lifecycle_manager)
     ld.add_action(racecar_model)
     ld.add_action(racecar_simulator)
+    ld.add_action(wall_follower_simulator)
     
 
     return ld
