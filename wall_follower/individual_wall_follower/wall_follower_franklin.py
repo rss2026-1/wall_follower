@@ -70,9 +70,6 @@ class WallFollower(Node):
         sub_x = x_coord[start:end]
         sub_y = y_coord[start:end]
 
-        sub_x = x_coord
-        sub_y = y_coord
-
         oc = np.polyfit(sub_x, sub_y, 1)
         coeff = np.polyfit(sub_x, sub_y, 1)
         original_line = np.poly1d(oc)
