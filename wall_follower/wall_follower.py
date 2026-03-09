@@ -42,7 +42,7 @@ class WallFollower(Node):
         # PID constants
         ##################
         self.kp = 2.0
-        self.kd = 1.0
+        self.kd = 0.5
         # self.k_angle = 0.8
 
         # Lookahead
